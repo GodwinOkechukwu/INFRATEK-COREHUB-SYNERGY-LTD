@@ -97,7 +97,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className="font-inter w-full min-h-screen antialiased bg-white text-slate-900"
+        className="font-inter w-full min-h-screen antialiased bg-[#060809] text-white"
       >
         <AppProvider>
           {/* Main Content */}

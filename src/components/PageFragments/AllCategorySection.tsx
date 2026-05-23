@@ -1,140 +1,145 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import Picture from "../picture/Picture";
 import Link from "next/link";
-
-import { homeImage1, heroBg, homeImage2, homeImage3, homeImage4, homeImage5 } from "@public/images";
+import { homeImage1, heroBg } from "@public/images";
 
 const AllCategorySection = () => {
   return (
     <>
-      <section className="relative min-h-[100dvh] sm:min-h-screen overflow-hidden flex items-center justify-center">
-        <div className="absolute inset-0 z-0">
+      {/* ── Hero Section ── */}
+      <section className="relative w-full overflow-hidden pt-[150px] md:pt-0 rounded-2xl max-w-[1300px] m-auto">
+        {/* Hero image with purple overlay */}
+        <div className="relative w-full aspect-video ">
           <Picture
-            src={heroBg}
-            alt="Laptop keyboard — top-notch accessories backdrop"
+            src={homeImage1}
+            alt="Complete hardware solutions"
             className="w-full h-full object-cover"
+          />
+          {/* Purple-tinted dark overlay */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(60,10,90,0.55) 0%, rgba(30,10,60,0.45) 50%, rgba(10,10,20,0.6) 100%)",
+            }}
+            aria-hidden="true"
+          />
+          {/* Headline centered over image */}
+          <div className="absolute inset-0 flex items-center justify-center z-10 px-6 ">
+            <h1
+              className="text-white  text-center font-extrabold text-[30px] md:text-[100px] leading-tight tracking-tight"
+              // style={{ fontSize: "clamp(1.6rem, 5vw, 3.5rem)" }}
+            >
+              Complete Hardware
+              <br />
+              Solutions for Every
+              <br />
+              Digital Need
+            </h1>
+          </div>
+          {/* Bottom fade into dark bg */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-1/3"
+            style={{
+              background:
+                "linear-gradient(to top, rgba(15,15,15,0.8), transparent)",
+            }}
+            aria-hidden="true"
           />
         </div>
 
-        <div
-          className="absolute inset-0 z-10"
-          style={{
-            background:
-              "linear-gradient(to right, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.5) 100%)",
-          }}
-          aria-hidden="true"
-        />
-
-        <div className="relative z-20 flex flex-col items-center w-full">
-          {/* ── Text block ──────────────────────────────────────────────────
-            Headline + sub-copy, centred on all viewports.
-        ──────────────────────────────────────────────────────────────── */}
-          <div className="text-center px-5 sm:px-8 pt-16 sm:pt-20 md:pt-24 lg:pt-28 max-w-2xl lg:max-w-3xl mx-auto">
-            {/* Main headline */}
-            <h1
-              className="
-              text-white font-[300]
-              text-3xl sm:text-4xl md:text-5xl lg:text-6xl
-              leading-tight tracking-tight
-              mb-5 sm:mb-6
-            "
-            >
-              Discover Timeless
-              <br className="hidden xs:block" /> Elegance with Timezone
-            </h1>
-
-            {/* Sub-copy */}
-            <p
-              className="
-              text-gray-400
-              text-sm sm:text-base md:text-[0.95rem]
-              leading-relaxed
-              max-w-lg sm:max-w-xl mx-auto
-              mb-8 sm:mb-10
-            "
-            >
-              we believe that every second counts. Our carefully curated
-              collection of luxury and everyday timepieces offers more than just
-              a way to keep time— they reflect your style, precision, and
-              craftsmanship.
-            </p>
-
-            <Link
-              href="/category"
-              className="
-              inline-block
-              bg-white text-gray-900
-              text-sm sm:text-base font-medium
-              px-10 py-3 sm:px-12 sm:py-3.5
-              rounded-full
-              shadow-lg shadow-white/10
-              hover:bg-gray-100
-              transition-colors duration-200
-              focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black
-            "
-            >
-              Shop now
-            </Link>
+        {/* ── About Us Section ── */}
+        <div className="bg-[#0f0f0f] px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+          <div className="md:col-span-1">
+            <h2 className="text-white text-4xl font-bold leading-snug">
+              About
+              <br />
+              us
+            </h2>
           </div>
-          <div
-            className="
-            relative mt-10 sm:mt-12 md:mt-14
-            w-[90%] sm:w-[75%] md:w-[60%] lg:w-[52%] xl:w-[46%]
-            max-w-[700px]
-          "
-          >
-            <Picture
-              src={homeImage1}
-              alt="Laptop keyboard — top-notch accessories backdrop"
-              className="w-full h-full object-cover"
-            />
+          <div className="md:col-span-2">
+            <p className="text-sm sm:text-sm slg:text-base leading-relaxed ">
+              ClearPathSummit Innovations is a trusted distributor of premium
+              computer hardware and digital technology solutions in Nigeria. We
+              provide a wide range of high-performance gadgets and IT equipment
+              designed to support businesses, gamers, creators, students, and
+              tech enthusiasts. Our products include;
+              <br />
+              Laptops & Desktop Computers, Gaming Accessories, Computer
+              Components, Networking Devices, Office Tech Equipment, Monitors,
+              Keyboards, Mice, Printers, Storage Devices, CCTV & Security
+              Systems, Smart Gadgets, and other cutting-edge digital accessories
+              built for productivity, performance, and innovation.
+            </p>
           </div>
         </div>
-      </section>
+        <div className="relative w-full">
+          {/* Same background image */}
+          <Picture
+            src={heroBg}
+            alt="Why choose us backdrop"
+            className="w-full h-[460px] block"
+          />
 
-      <section className="bg-slate-950 text-white">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                image: homeImage2,
-                title: "Secure Payment",
-                description: "100% secure payment",
-              },
-              {
-                image: homeImage3,
-                title: "30 Days Return",
-                description: "If goods have problems",
-              },
-              {
-                image: homeImage4,
-                title: "24/7 Support",
-                description: "Dedicated support",
-              },
-              {
-                image: homeImage5,
-                title: "Free Delivery",
-                description: "For all order over 80$",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-3xl border border-white/10 bg-[#2b292f] p-6 text-center shadow-[0_18px_60px_rgba(0,0,0,0.18)] backdrop-blur-xl"
-              >
-                <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-white">
-                  <Picture
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
+          {/* Dark + warm overlay to match the orange-purple keyboard vibe */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to right, rgba(40,10,60,0.72) 0%, rgba(20,10,30,0.60) 50%, rgba(10,5,10,0.55) 100%)",
+            }}
+            aria-hidden="true"
+          />
+
+          {/* Content */}
+          <div className="absolute inset-0 flex flex-col justify-between px-8 py-2 md:px-14  ">
+            {/* Heading */}
+            <h2 className="text-white text-center font-extrabold text-3xl md:text-5xl tracking-tight mt-5 pb-5">
+              Why Choose us
+            </h2>
+
+            {/* Feature cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:relative md:bottom-20">
+              {[
+                {
+                  icon: "↗",
+                  title: "Speed",
+                  description:
+                    "Blazing-fast delivery and processing so you get your hardware up and running without the wait.",
+                },
+                {
+                  icon: "🔒",
+                  title: "Security",
+                  description:
+                    "Every transaction is encrypted and protected. Shop with confidence knowing your data is always safe.",
+                },
+                {
+                  icon: "📶",
+                  title: "Support",
+                  description:
+                    "Our expert team is available around the clock to help you with setup, troubleshooting, and advice.",
+                },
+              ].map((item) => (
+                <div key={item.title} className="flex items-start gap-4">
+                  {/* Icon box */}
+                  <div
+                    className="flex-shrink-0 w-16 h-16 rounded-xl flex items-center justify-center text-2xl"
+                    style={{ background: "rgba(255,255,255,0.12)" }}
+                  >
+                    {item.icon}
+                  </div>
+                  <div>
+                    <h3 className="text-white font-bold text-lg mb-1">
+                      {item.title}
+                    </h3>
+                    <p className="text-gray-300 text-sm leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="text-lg font-semibold tracking-tight text-white">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm text-gray-400">{item.description}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>

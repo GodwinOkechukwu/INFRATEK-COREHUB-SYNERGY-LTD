@@ -22,4 +22,6 @@ export const T = {
 	banners:            `${prefix}banners`,
 	globalSettings:     `${prefix}global_settings`,
 	reviews:            `${prefix}reviews`,
+	contactMessages: `${prefix}contact_messages`,
+
 } as const;

@@ -155,6 +155,17 @@ CREATE TABLE IF NOT EXISTS clearpathsummit_global_settings (
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- Contact Messages
+CREATE TABLE IF NOT EXISTS clearpathsummit_contact_messages (
+  id          SERIAL PRIMARY KEY,
+  fullName    VARCHAR(255) NOT NULL,
+  email       VARCHAR(255) NOT NULL,
+  phone       VARCHAR(50),
+  subject     VARCHAR(255),
+  message     TEXT NOT NULL,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 -- Product Reviews
 CREATE TABLE IF NOT EXISTS clearpathsummit_reviews (
   id          SERIAL PRIMARY KEY,

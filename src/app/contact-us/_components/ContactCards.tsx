@@ -1,11 +1,13 @@
 "use client";
+import React, { useState } from "react";
 import { Skeleton } from "@heroui/react";
 import ContactCard from "@src/components/Cards/ContactCard";
 import { useGeneralSettings } from "@src/components/lib/woocommerce";
-import React from "react";
 import { FiPhoneCall, FiClock, FiMessageSquare } from "react-icons/fi";
 import { IoLocationOutline } from "react-icons/io5";
 import { RxEnvelopeClosed } from "react-icons/rx";
+// import { SITE_EMAIL } from "@constants/seoContants";
+import FormToast from "@src/components/Reusables/Toast/SigninToast";
 
 /* ─────────────────────────────────────────────
    Card skeleton
@@ -22,6 +24,13 @@ const CardSkeleton = () => (
   </div>
 );
 
+type ContactFormState = {
+  fullName: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+};
 /* ─────────────────────────────────────────────
    Main component
 ───────────────────────────────────────────── */
@@ -29,13 +38,79 @@ const ContactCards = () => {
   const { data: generalSettings, isLoading, isError } = useGeneralSettings();
   const GeneralSettings: WooCommerceSetting[] = generalSettings;
 
+  const [formData, setFormData] = useState<ContactFormState>({
+    fullName: "",
+    phone: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setStatusMessage(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to submit message.");
+      }
+
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      });
+      setStatusMessage("Your message has been sent successfully.");
+      FormToast({
+        message: "Your message has been sent successfully.",
+        success: true,
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Unable to send your message. Please try again.";
+      setStatusMessage(errorMessage);
+      FormToast({
+        message: errorMessage,
+        success: false,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const contactCardData = [
     {
       id: 1,
       title: "Email Us",
       type: "email",
       icon: <RxEnvelopeClosed />,
-      additionalText: "info@clearpath.com",
+      additionalText: "SITE_EMAIL",
       // additionalText: GeneralSettings ? GeneralSettings[0]?.value : "N/A",
     },
     {
@@ -43,7 +118,7 @@ const ContactCards = () => {
       title: "Call Us",
       type: "tel",
       icon: <FiPhoneCall />,
-      additionalText: "08065567866",
+      additionalText: "08140875523",
       // additionalText: GeneralSettings ? GeneralSettings[1]?.value : "N/A",
     },
     {
@@ -51,7 +126,7 @@ const ContactCards = () => {
       title: "Our Location",
       type: "text",
       icon: <IoLocationOutline />,
-      description: "1 alhaja iya pupa street, yafin badagry.",
+      description: "21, Ilupeju Road, Ilupeju Lagos state",
       // description: GeneralSettings ? GeneralSettings[2]?.value : "N/A",
     },
     {
@@ -101,7 +176,7 @@ const ContactCards = () => {
           {/* Headline */}
           <h1 className="text-[clamp(38px,6vw,72px)] font-bold tracking-tight leading-[1.05] mb-5">
             Get in{" "}
-            <span className="italic font-light text-gray-700">Touch</span>
+            <span className="italic font-light text-[#fff]">Touch</span>
           </h1>
 
           <p className="text-base sm:text-lg text-white/50 font-light leading-relaxed max-w-lg mx-auto">
@@ -146,88 +221,103 @@ const ContactCards = () => {
         {/* ── FORM ── */}
         <div className="bg-white rounded-2xl border border-black/[0.07] p-8 sm:p-10 shadow-[0_1px_4px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)]">
           <div className="mb-7">
-            <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-black mb-1.5">
+            <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#000] mb-1.5">
               Send a Message
             </p>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
-              Send an email to info@clearpath.com, We'll get back to you shortly
-            </h2>
           </div>
 
-          {/* <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="John"
-                  className="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/10"
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="Doe"
-                  className="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/10"
-                />
-              </div>
-            </div>
-
-           
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase">
-                Email Address
-              </label>
-              <input
-                type="email"
-                placeholder="john@example.com"
-                className="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/10"
-              />
-            </div>
-
-            
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-1.5">
               <label className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase">
                 Subject
               </label>
               <input
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
                 type="text"
                 placeholder="How can we help?"
                 className="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/10"
               />
             </div>
 
-            
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase">
+                Full Name
+              </label>
+              <input
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                type="text"
+                placeholder="John"
+                className="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/10"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase">
+                  Phone
+                </label>
+                <input
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  type="tel"
+                  placeholder="john@example.com"
+                  className="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/10"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase">
+                  Email Address
+                </label>
+                <input
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  type="email"
+                  placeholder="john@example.com"
+                  className="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/10"
+                />
+              </div>
+            </div>
+
             <div className="flex flex-col gap-1.5">
               <label className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase">
                 Message
               </label>
               <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
                 rows={5}
                 placeholder="Tell us a little more about your enquiry…"
                 className="w-full px-4 py-3 text-sm rounded-xl border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/10 resize-none"
               />
             </div>
 
-            
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 bg-gray-950 text-white font-semibold text-sm tracking-wide py-3.5 px-6 rounded-xl transition-all duration-200 hover:bg-gray-800 hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(0,0,0,0.2)] active:translate-y-0 active:shadow-none"
+              disabled={isSubmitting}
+              className="w-full flex items-center justify-center gap-2 bg-[#000] text-white font-semibold text-sm tracking-wide py-3.5 px-6 rounded-xl transition-all duration-200 hover:bg-[#00080] hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(0,0,0,0.2)] active:translate-y-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
             >
               <FiMessageSquare className="w-4 h-4" />
-              Send Message
+              {isSubmitting ? "Sending..." : "Send Message"}
             </button>
+
+            {statusMessage && (
+              <p className="text-[11px] text-center text-gray-500">
+                {statusMessage}
+              </p>
+            )}
 
             <p className="text-[11px] text-center text-gray-400">
               We typically respond within 24 hours on business days.
             </p>
-          </form> */}
+          </form>
         </div>
       </div>
     </div>
