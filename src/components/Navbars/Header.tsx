@@ -23,7 +23,6 @@ import { setBaseCurrency, setExchangeRate } from "../Redux/Currency";
 import FormToast from "../Reusables/Toast/SigninToast";
 import useToken from "../hooks/useToken";
 import { logoImage } from "@public/images";
-import { PiShoppingCartBold } from "react-icons/pi";
 
 // Headless UI Components
 import { Menu, Transition } from "@headlessui/react";
@@ -37,7 +36,7 @@ import {
   FiShoppingCart,
   FiX,
 } from "react-icons/fi";
-import { SlArrowDown, SlClose } from "react-icons/sl";
+import { SlArrowDown } from "react-icons/sl";
 import Flag from "react-world-flags";
 import GlobalLoader from "../modal/GlobalLoader";
 import MobileNav from "./MobileNav";
@@ -48,9 +47,6 @@ import HomePageBottomHeader from "./HomePageBottomHeader";
 import { FaCartArrowDown } from "@node_modules/react-icons/fa";
 import { BiUser } from "@node_modules/react-icons/bi";
 import { ImSpinner2 } from "@node_modules/react-icons/im";
-import { MdOutlinePerson } from "@node_modules/react-icons/md";
-import { LuSearch } from "react-icons/lu";
-import { IoPersonCircleOutline } from "@node_modules/react-icons/io5";
 
 /* ─────────────────────────────────────────────
    CART PANEL
@@ -200,11 +196,10 @@ const Header = () => {
 
   const { baseCurrency } = useAppSelector((state) => state.currency);
   const [isPending, startTransition] = useTransition();
-
+  const [showSearch, setShowSearch] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const [showsearch, setShowSearch] = useState(false);
 
   const { data: customer } = useCustomer("");
   const wc_customer_info = useMemo(
@@ -239,10 +234,6 @@ const Header = () => {
     });
   };
 
-  const showSearchField = () => {
-    setShowSearch((prev) => !prev);
-  };
-
   const userDropDownLinks = [
     {
       id: 1,
@@ -261,69 +252,53 @@ const Header = () => {
 
   return (
     <>
-      <header className="flex flex-col w-full bg-[#191919] z-[100] fixed top-0 border-b border-white/5 shadow-2xl transition-all">
+      <header className="flex flex-col w-full bg-[#060809]  z-[100] fixed top-0 border-b border-white/5 shadow-2xl transition-all">
         {/* Desktop Header */}
-        <div className="hidden slg:grid grid-cols-3 items-center justify-stretch w-full py-3 max-w-[1350px] mx-auto">
+        <div
+          className={`hidden slg:grid ${showSearch ? "grid-cols-3 " : "grid-cols-3"} items-center justify-stretch w-full py-3 max-w-[1350px] mx-auto`}
+        >
           {/* 1. Logo */}
-          <div className="col-span-1 flex items-center gap-10 ">
-            <div className="">
-              <Picture className="w-[50px]" src={logoImage} alt="logo" />
+          <div className="flex items-center  gap-10 ">
+            <div className="!w-[500px] ">
+              <Picture className="!w-[200px]" src={logoImage} alt="logo" />
             </div>
-          </div>
-          {/* 2. Search Bar */}
-          <div className="col-span-1 flex justify-center ">
+
             <div className="pr-8">
               <HomePageBottomHeader />
             </div>
           </div>
+          {/* 2. Search Bar */}
+          <div className="col-span-1 flex justify-center ">
+            <div className="relative w-full max-w-[550px] group">
+              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-blue-500 transition-colors" />
+              <input
+                type="text"
+                placeholder="Search hardware, accessories..."
+                className="w-full h-11 text-sm text-gray-500 rounded-3xl pl-12 pr-5 outline-none focus:border-blue-500/50 transition bg-gray-200"
+                onChange={(e) => setSearchValue(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              />
+            </div>
+          </div>
 
           {/* 3. Controls */}
+          <div className="col-span-1 flex items-center justify-end gap-6">
+            {/* STABLE CURRENCY DROPDOWN */}
 
-          {/* Search feild  */}
-          <div className="col-span-1 flex items-center justify-end gap-4">
-            {showsearch && (
-              <div className="w-full flex item-center justify-center">
-                <div className="relative w-full max-w-[550px] group">
-                  <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-white group-focus-within:text-gray-400 transition-colors" />
-                  <input
-                    type="text"
-                    placeholder="Search hardware, accessories..."
-                    className="w-full h-8 text-sm text-gray-700 rounded-full pl-12 pr-5 border border-white/8 outline-none focus:border-gray-300 transition bg-gray-200"
-                    onChange={(e) => setSearchValue(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  />
-                </div>
-              </div>
-            )}
-
-            <div
-              onClick={showSearchField}
-              className="relative inline-block group-hover:text-gray-700 transition text-left cursor-pointer"
-            >
-              {showsearch ? (
-                <SlClose color="white" size={20} />
-              ) : (
-                <LuSearch
-                  className="text-white group-hover:text-gray-700 transition"
-                  size={20}
-                />
-              )}
-            </div>
-
-            {/* STABLE USER DROPDOWN */}
             <Menu as="div" className="relative inline-block text-left">
               {({ open }) => (
                 <>
-                  <Menu.Button className="flex items-center gap-2 cursor-pointer group outline-none focus:ring-0">
-                    {wc_customer_info?.shipping?.address_2 ? (
-                      getFirstCharacter(wc_customer_info?.first_name || "U")
-                    ) : (
-                      <div className="size-9 rounded-full bg-transparent text-gray-100 flex items-center justify-center font-black text-xs">
-                        <IoPersonCircleOutline className="text-white text-2xl group-hover:text-gray-700 transition" />
-                      </div>
-                    )}
+                  <Menu.Button className="flex items-center gap-2 bg-[#111111] border border-white/10 px-3 py-2 rounded-xl cursor-pointer hover:bg-white/5 transition group outline-none">
+                    {/* @ts-ignore */}
+                    <Flag
+                      code={baseCurrency?.countryCode || "NG"}
+                      className="w-4 rounded-sm"
+                    />
+                    <span className="text-xs font-bold text-gray-200 uppercase">
+                      {baseCurrency.code}
+                    </span>
                     <SlArrowDown
-                      className={`text-[10px] text-transparent transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                      className={`text-[8px] text-gray-500 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
                     />
                   </Menu.Button>
 
@@ -336,53 +311,25 @@ const Header = () => {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="absolute right-0 mt-2 w-52 origin-top-right bg-[#111111] border border-white/10 rounded-2xl shadow-2xl p-1.5 z-[110] outline-none">
-                      <div className="px-3 py-2 mb-1 border-b border-white/5">
-                        <p className="text-xs text-gray-500">Logged in as</p>
-                        <p className="text-sm font-bold text-white truncate">
-                          {wc_customer_info?.first_name}
-                        </p>
-                      </div>
-
-                      <div className="flex flex-col gap-0.5">
-                        {userDropDownLinks.map((item) => (
-                          <Menu.Item key={item.id}>
-                            {({ active }) => (
-                              <button
-                                onClick={(e) => {
-                                  if (item.onClick) {
-                                    e.preventDefault();
-                                    item.onClick();
-                                  } else if (item.href) {
-                                    router.push(item.href);
-                                  }
-                                }}
-                                className={`${
-                                  active
-                                    ? "bg-white/5 text-white"
-                                    : "text-gray-300"
-                                } flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm transition-colors`}
-                              >
-                                <span className="text-lg">{item.icon}</span>
-                                {item.label}
-                              </button>
-                            )}
-                          </Menu.Item>
-                        ))}
-                      </div>
-
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button
-                            onClick={() => signOut()}
-                            className={`${
-                              active ? "bg-red-500/10" : ""
-                            } flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm text-red-500 font-bold transition-colors mt-1`}
-                          >
-                            <FiLogOut /> Log Out
-                          </button>
-                        )}
-                      </Menu.Item>
+                    <Menu.Items className="absolute right-0 mt-2 w-36 origin-top-right bg-[#111111] border border-white/10 rounded-2xl shadow-2xl p-1 z-[110] outline-none">
+                      {currencyOptions.map((c) => (
+                        <Menu.Item key={c.code}>
+                          {({ active }) => (
+                            <button
+                              onClick={() => handleCurrencyChange(c.code)}
+                              className={`${
+                                active
+                                  ? "bg-white/5 text-white"
+                                  : "text-gray-400"
+                              } flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-medium transition-colors`}
+                            >
+                              {/* @ts-ignore */}
+                              <Flag code={c.countryCode} className="w-4" />
+                              {c.code} ({c.symbol})
+                            </button>
+                          )}
+                        </Menu.Item>
+                      ))}
                     </Menu.Items>
                   </Transition>
                 </>
@@ -390,14 +337,101 @@ const Header = () => {
             </Menu>
 
             {/* Cart */}
-            <div className="relative cursor-pointer ml-[-20px] group" onClick={onOpenCart}>
-              <PiShoppingCartBold className="text-2xl text-white group-hover:text-gray-700 transition" />
+            <div className="relative cursor-pointer group" onClick={onOpenCart}>
+              <FiShoppingBag className="text-2xl text-gray-500 group-hover:text-gray-700 transition" />
               {totalItems > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 size-5 bg-gray-800 text-white text-[10px] font-black flex items-center justify-center rounded-full border-2 border-black">
                   {totalItems}
                 </span>
               )}
             </div>
+
+            {/* STABLE USER DROPDOWN */}
+            {email && (
+              <Menu as="div" className="relative inline-block text-left">
+                {({ open }) => (
+                  <>
+                    <Menu.Button className="flex items-center gap-2 cursor-pointer group outline-none focus:ring-0">
+                      {wc_customer_info?.shipping?.address_2 ? (
+                        <Picture
+                          src={wc_customer_info.shipping.address_2}
+                          alt="user"
+                          className="size-9 rounded-full border border-white/10"
+                        />
+                      ) : (
+                        <div className="size-9 rounded-full bg-gray-300 text-gray-500 flex items-center justify-center font-black text-xs">
+                          {getFirstCharacter(
+                            wc_customer_info?.first_name || "U",
+                          )}
+                        </div>
+                      )}
+                      <SlArrowDown
+                        className={`text-[10px] text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                      />
+                    </Menu.Button>
+
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
+                    >
+                      <Menu.Items className="absolute right-0 mt-2 w-52 origin-top-right bg-[#111111] border border-white/10 rounded-2xl shadow-2xl p-1.5 z-[110] outline-none">
+                        <div className="px-3 py-2 mb-1 border-b border-white/5">
+                          <p className="text-xs text-gray-500">Logged in as</p>
+                          <p className="text-sm font-bold text-white truncate">
+                            {wc_customer_info?.first_name}
+                          </p>
+                        </div>
+
+                        <div className="flex flex-col gap-0.5">
+                          {userDropDownLinks.map((item) => (
+                            <Menu.Item key={item.id}>
+                              {({ active }) => (
+                                <button
+                                  onClick={(e) => {
+                                    if (item.onClick) {
+                                      e.preventDefault();
+                                      item.onClick();
+                                    } else if (item.href) {
+                                      router.push(item.href);
+                                    }
+                                  }}
+                                  className={`${
+                                    active
+                                      ? "bg-white/5 text-white"
+                                      : "text-gray-300"
+                                  } flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm transition-colors`}
+                                >
+                                  <span className="text-lg">{item.icon}</span>
+                                  {item.label}
+                                </button>
+                              )}
+                            </Menu.Item>
+                          ))}
+                        </div>
+
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              onClick={() => signOut()}
+                              className={`${
+                                active ? "bg-red-500/10" : ""
+                              } flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm text-red-500 font-bold transition-colors mt-1`}
+                            >
+                              <FiLogOut /> Log Out
+                            </button>
+                          )}
+                        </Menu.Item>
+                      </Menu.Items>
+                    </Transition>
+                  </>
+                )}
+              </Menu>
+            )}
           </div>
         </div>
 
@@ -409,7 +443,7 @@ const Header = () => {
                 className="text-2xl text-white"
                 onClick={() => setDrawerVisible(true)}
               />
-              <LogoImage className="!w-[50px] brightness-200" />
+              <LogoImage className="!w-[200px] brightness-200" />
             </div>
             <div onClick={onOpenCart} className="relative">
               <FiShoppingBag className="text-2xl text-white" />

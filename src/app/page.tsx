@@ -32,7 +32,7 @@ const page = () => {
       <div className="mx-auto">
         <NewArrivals />
       </div>
-      <MachineMaintenance />
+      {/* <MachineMaintenance /> */}
       <AppMenu />
     </AppLayout>
   );

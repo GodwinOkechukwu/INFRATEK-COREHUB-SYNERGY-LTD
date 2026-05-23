@@ -128,13 +128,13 @@ const Footer = () => {
   const staggerDelay = 0.2;
 
   return (
-    <footer className=" bg-[#1B1725] w-full py-2 flex flex-col item-center mb-[-100px]">
+    <footer className=" w-full bg-[#060809] py-2 flex flex-col item-center mb-[-100px]">
       <div className="mx-auto max-w-[1350px] w-full hidden slg:block">
         <section className="flex justify-center gap-16 mt-2">
           <div className="flex flex-col gap-6 w-[80%]">
             {/* <LogoImage className='!w-[20px] lg:!w-[30px] rounded-sm' /> */}
             <p className="">
-              <Picture className="w-[50px]" src={logoImage} alt="logo" />
+              <Picture className="w-[200px]" src={logoImage} alt="logo" />
             </p>
 
             {/* <div className="flex gap-4">
@@ -185,7 +185,7 @@ const Footer = () => {
             <div className="">
               {/* <LogoImage className="!w-[30px] lg:!w-[30px]" /> */}
               <p className="">
-                <Picture className="w-[50px]" src={logoImage} alt="logo" />
+                <Picture className="w-[200px]" src={logoImage} alt="logo" />
               </p>
             </div>
 

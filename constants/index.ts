@@ -71,6 +71,7 @@ export const headerNavLinks: linksProps[] = [
   { id: 1, href: "/", text: "Home" },
   { id: 2, href: "/category", text: "Categories" },
   { id: 3, href: "/contact-us", text: "Contact" },
+    { id: 3, href: "/about", text: "About" },
 ];
 
 export interface SectionProps {

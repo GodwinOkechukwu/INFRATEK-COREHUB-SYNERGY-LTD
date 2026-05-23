@@ -1,83 +1,141 @@
 "use client";
-import { WooCommerce } from "@src/components/lib/woocommerce";
+import React, { useEffect, useState, useCallback } from "react";
+import { WooCommerce, useCategories } from "@src/components/lib/woocommerce";
 import NewArrivalCard from "../Cards/NewArrivalCard";
-import React, { useEffect, useState } from "react";
 
+// ── Types ──────────────────────────────────────────────
+interface CategoryTab {
+  id: number | "all";
+  name: string;
+}
 
-export const NewArrivalsLoader = () => (
-  <div className="w-full py-12 md:py-16 bg-gradient-to-b from-white to-gray-50">
-    <div className="max-w-[1400px] mx-auto px-4 md:px-6">
-      <div className="flex items-center justify-between mb-8 md:mb-12">
-        <div className="space-y-2">
-          <div className="h-8 bg-gray-200 animate-pulse rounded-lg w-48 md:w-64" />
-          <div className="h-4 bg-gray-200 animate-pulse rounded-lg w-32 md:w-48" />
-        </div>
-        <div className="h-6 w-20 bg-gray-200 animate-pulse rounded" />
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4 lg:gap-5">
-        {[1, 2, 3, 4, 5].map((item) => (
-          <div key={item} className="bg-gray-100 rounded-lg overflow-hidden">
-            <div className="aspect-square bg-gray-200 animate-pulse" />
-            <div className="p-4 space-y-3">
-              <div className="h-4 bg-gray-200 animate-pulse rounded w-3/4" />
-              <div className="h-6 bg-gray-200 animate-pulse rounded w-1/2" />
-              <div className="h-10 bg-gray-200 animate-pulse rounded" />
-            </div>
+// ── Skeleton loader ─────────────────────────────────────
+const SkeletonGrid = () => (
+  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+    {Array.from({ length: 6 }).map((_, i) => (
+      <div
+        key={i}
+        className="rounded-2xl overflow-hidden bg-[#1a1a1a] animate-pulse"
+      >
+        <div className="aspect-square bg-[#252525]" />
+        <div className="p-4 space-y-3 bg-[#111]">
+          <div className="h-4 bg-[#252525] rounded w-3/4" />
+          <div className="flex items-center justify-between">
+            <div className="h-6 bg-[#252525] rounded w-1/3" />
+            <div className="h-8 bg-[#252525] rounded w-16" />
           </div>
-        ))}
+        </div>
       </div>
-    </div>
+    ))}
   </div>
 );
 
+// ── Main component ──────────────────────────────────────
 export default function NewArrivals() {
-  const [newProducts, setNewProducts] = useState<ProductType[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<number | "all">("all");
+  const [products, setProducts] = useState<ProductType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  useEffect(() => {
-    const fetchNewArrivals = async () => {
+  const PER_PAGE = 6;
+
+  // Fetch categories for tabs
+  const { data: categoriesRaw } = useCategories("");
+  const categories: CategoryType[] = categoriesRaw || [];
+
+  const tabs: CategoryTab[] = [
+    { id: "all", name: "All Products" },
+    ...categories
+      .filter((c: CategoryType) => c.count > 0)
+      .slice(0, 6)
+      .map((c: CategoryType) => ({ id: c.id, name: c.name })),
+  ];
+
+  // Fetch products by tab
+  const fetchProducts = useCallback(
+    async (tab: number | "all", pageNum: number, append = false) => {
       try {
-        setIsLoading(true);
+        if (pageNum === 1) setIsLoading(true);
+        else setLoadingMore(true);
+
+        const categoryParam = tab === "all" ? "" : `&category=${tab}`;
         const response = await WooCommerce.get(
-          "products?orderby=date&order=desc&per_page=24",
+          `products?orderby=date&order=desc&per_page=${PER_PAGE}&page=${pageNum}${categoryParam}`,
         );
-        setNewProducts(response?.data || []);
-      } catch (error) {
-        console.error("Error fetching new arrivals:", error);
+
+        const fetched: ProductType[] = response?.data || [];
+        setProducts((prev) => (append ? [...prev, ...fetched] : fetched));
+        setHasMore(fetched.length === PER_PAGE);
+      } catch (err) {
+        console.error("Error fetching products:", err);
       } finally {
         setIsLoading(false);
+        setLoadingMore(false);
       }
-    };
+    },
+    [],
+  );
 
-    fetchNewArrivals();
-  }, []);
+  // On tab change
+  useEffect(() => {
+    setPage(1);
+    setProducts([]);
+    fetchProducts(activeTab, 1, false);
+  }, [activeTab, fetchProducts]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen pt-24">
-        <NewArrivalsLoader />
-      </div>
-    );
-  }
+  // On "View More"
+  const handleViewMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchProducts(activeTab, nextPage, true);
+  };
 
   return (
-    <>
-      <div className="min-h-screen bg-white mt-10">
-        <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12">
-          {/* Page Header */}
-          <div className="mb-8 md:mb-12">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-              New Collections
-            </h1>
-            <p className="text-base md:text-lg text-gray-600">
-              Discover our latest products ({newProducts.length} items)
-            </p>
-          </div>
+    <div className="min-h-screen bg-[#0a0a0a] text-white">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-16">
+        {/* ── Header ── */}
+        <div className="text-center mb-10">
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3 tracking-tight">
+            New Arrivals
+          </h1>
+          <p className="text-[#888] text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+            Fresh drops and the latest in hardware — explore our newest products
+            across every category.
+          </p>
+        </div>
 
-          {/* Products Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4  gap-3 md:gap-4 lg:gap-5">
-            {newProducts.map((product: ProductType) => (
+        {/* ── Category Tabs ── */}
+        <div className="flex items-center gap-2 flex-wrap justify-center mb-10">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`
+                px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 border
+                ${
+                  activeTab === tab.id
+                    ? "bg-white text-black border-white"
+                    : "bg-transparent text-[#888] border-[#2a2a2a] hover:border-[#444] hover:text-white"
+                }
+              `}
+            >
+              {tab.name}
+            </button>
+          ))}
+        </div>
+
+        {/* ── Product Grid ── */}
+        {isLoading ? (
+          <SkeletonGrid />
+        ) : products.length === 0 ? (
+          <div className="text-center py-20 text-[#555]">
+            <p className="text-lg">No products found in this category.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {products.map((product: ProductType) => (
               <NewArrivalCard
                 key={product.id}
                 id={product.id}
@@ -89,15 +147,21 @@ export default function NewArrivals() {
               />
             ))}
           </div>
+        )}
 
-          {/* Empty State */}
-          {!newProducts.length && (
-            <div className="text-center py-16">
-              <p className="text-gray-600 text-lg">No new products available</p>
-            </div>
-          )}
-        </div>
+        {/* ── View More ── */}
+        {!isLoading && hasMore && (
+          <div className="mt-10 flex justify-center">
+            <button
+              onClick={handleViewMore}
+              disabled={loadingMore}
+              className="px-10 py-3 rounded-full border border-[#2a2a2a] text-sm font-medium text-[#888] hover:border-[#444] hover:text-white transition-all duration-200 disabled:opacity-50"
+            >
+              {loadingMore ? "Loading..." : "View More"}
+            </button>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
