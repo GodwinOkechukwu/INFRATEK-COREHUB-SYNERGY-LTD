@@ -259,16 +259,16 @@ const Header = () => {
         >
           {/* 1. Logo */}
           <div className="flex items-center  gap-10 ">
-            <div className="!w-[500px] ">
-              <Picture className="!w-[200px]" src={logoImage} alt="logo" />
-            </div>
+            {/* <div className="!w-[500px] "> */}
+            <Picture className="!w-[100px]" src={logoImage} alt="logo" />
+            {/* </div>  */}
 
             <div className="pr-8">
               <HomePageBottomHeader />
             </div>
           </div>
           {/* 2. Search Bar */}
-          <div className="col-span-1 flex justify-center ">
+          <div className="col-span-1 flex justify-center md:relative md:left-[15%]">
             <div className="relative w-full max-w-[550px] group">
               <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-blue-500 transition-colors" />
               <input
