@@ -110,7 +110,7 @@ const ContactCards = () => {
       title: "Email Us",
       type: "email",
       icon: <RxEnvelopeClosed />,
-      additionalText: "SITE_EMAIL",
+      additionalText: "contact@elevanta.com",
       // additionalText: GeneralSettings ? GeneralSettings[0]?.value : "N/A",
     },
     {
@@ -118,7 +118,7 @@ const ContactCards = () => {
       title: "Call Us",
       type: "tel",
       icon: <FiPhoneCall />,
-      additionalText: "08140875523",
+      additionalText: "08065450890",
       // additionalText: GeneralSettings ? GeneralSettings[1]?.value : "N/A",
     },
     {
@@ -126,7 +126,7 @@ const ContactCards = () => {
       title: "Our Location",
       type: "text",
       icon: <IoLocationOutline />,
-      description: "21, Ilupeju Road, Ilupeju Lagos state",
+      description: "no 89 federal low cost housing estate oloje ilorin",
       // description: GeneralSettings ? GeneralSettings[2]?.value : "N/A",
     },
     {

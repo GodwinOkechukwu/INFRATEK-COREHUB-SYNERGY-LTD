@@ -1,13 +1,13 @@
 /**
  * Centralised table-name registry.
  *
- * The prefix is read from the TABLE_PREFIX environment variable (default: "clearpathsummit_").
+ * The prefix is read from the TABLE_PREFIX environment variable (default: "elevanta_").
  * Set TABLE_PREFIX in your .env file to change it for every table at once.
  *
  * Example .env entry:
- *   TABLE_PREFIX=clearpathsummit_
+ *   TABLE_PREFIX=elevanta_
  */
-const prefix = process.env.TABLE_PREFIX ?? "clearpathsummit_";
+const prefix = process.env.TABLE_PREFIX ?? "elevanta_";
 
 export const T = {
 	users:              `${prefix}users`,

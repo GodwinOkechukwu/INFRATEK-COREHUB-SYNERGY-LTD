@@ -52,7 +52,7 @@ const page = () => {
         <section className="relative w-full">
           <Picture
             src={heroBg}
-            alt="ClearPathSummit Innovations"
+            alt="Elevanta Limited"
             className="w-full h-[460px] block"
           />
           <div
@@ -113,12 +113,12 @@ const page = () => {
             <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight mb-5">
               Welcome to
               <br />
-              ClearPathSummit
+              elevanta
               <br />
               Innovations
             </h2>
             <p className="text-[#888] text-sm leading-[1.9] mb-4">
-              ClearPathSummit Innovations is a trusted distributor of premium
+              Elevanta Limited is a trusted distributor of premium
               computer hardware and digital technology solutions in Nigeria. We
               provide a wide range of high-performance gadgets and IT equipment
               designed to support businesses, gamers, creators, students, and
