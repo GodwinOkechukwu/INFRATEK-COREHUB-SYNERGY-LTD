@@ -443,7 +443,7 @@ const Header = () => {
                 className="text-2xl text-white"
                 onClick={() => setDrawerVisible(true)}
               />
-              <LogoImage className="!w-[200px] brightness-200" />
+              <LogoImage className="!w-[100px] brightness-200" />
             </div>
             <div onClick={onOpenCart} className="relative">
               <FiShoppingBag className="text-2xl text-white" />
