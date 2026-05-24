@@ -1,11 +1,11 @@
 -- ============================================================
--- clearpathsummit E-Commerce PostgreSQL Schema
+-- elevanta E-Commerce PostgreSQL Schema
 -- Replaces WooCommerce as the data source
--- All table names use the "clearpathsummit_" prefix (matches TABLE_PREFIX in .env)
+-- All table names use the "elevanta_" prefix (matches TABLE_PREFIX in .env)
 -- ============================================================
 
 -- Users / Customers
-CREATE TABLE IF NOT EXISTS clearpathsummit_users (
+CREATE TABLE IF NOT EXISTS elevanta_users (
   id               SERIAL PRIMARY KEY,
   first_name       VARCHAR(100) NOT NULL DEFAULT '',
   last_name        VARCHAR(100) NOT NULL DEFAULT '',
@@ -29,12 +29,12 @@ CREATE TABLE IF NOT EXISTS clearpathsummit_users (
 );
 
 -- Product Categories
-CREATE TABLE IF NOT EXISTS clearpathsummit_categories (
+CREATE TABLE IF NOT EXISTS elevanta_categories (
   id          SERIAL PRIMARY KEY,
   name        VARCHAR(255) NOT NULL,
   slug        VARCHAR(255) UNIQUE NOT NULL,
   description TEXT,
-  parent_id   INTEGER REFERENCES clearpathsummit_categories(id) ON DELETE SET NULL,
+  parent_id   INTEGER REFERENCES elevanta_categories(id) ON DELETE SET NULL,
   image_url   TEXT,
   count       INTEGER NOT NULL DEFAULT 0,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS clearpathsummit_categories (
 );
 
 -- Products
-CREATE TABLE IF NOT EXISTS clearpathsummit_products (
+CREATE TABLE IF NOT EXISTS elevanta_products (
   id                SERIAL PRIMARY KEY,
   name              VARCHAR(500) NOT NULL,
   slug              VARCHAR(500) UNIQUE NOT NULL,
@@ -63,9 +63,9 @@ CREATE TABLE IF NOT EXISTS clearpathsummit_products (
 );
 
 -- Product Images
-CREATE TABLE IF NOT EXISTS clearpathsummit_product_images (
+CREATE TABLE IF NOT EXISTS elevanta_product_images (
   id          SERIAL PRIMARY KEY,
-  product_id  INTEGER NOT NULL REFERENCES clearpathsummit_products(id) ON DELETE CASCADE,
+  product_id  INTEGER NOT NULL REFERENCES elevanta_products(id) ON DELETE CASCADE,
   src         TEXT NOT NULL,
   name        VARCHAR(255),
   alt         TEXT,
@@ -74,25 +74,25 @@ CREATE TABLE IF NOT EXISTS clearpathsummit_product_images (
 );
 
 -- Product ↔ Category (many-to-many)
-CREATE TABLE IF NOT EXISTS clearpathsummit_product_categories (
-  product_id   INTEGER NOT NULL REFERENCES clearpathsummit_products(id) ON DELETE CASCADE,
-  category_id  INTEGER NOT NULL REFERENCES clearpathsummit_categories(id) ON DELETE CASCADE,
+CREATE TABLE IF NOT EXISTS elevanta_product_categories (
+  product_id   INTEGER NOT NULL REFERENCES elevanta_products(id) ON DELETE CASCADE,
+  category_id  INTEGER NOT NULL REFERENCES elevanta_categories(id) ON DELETE CASCADE,
   PRIMARY KEY (product_id, category_id)
 );
 
 -- Product Attributes (e.g. Color, Size, Brand)
-CREATE TABLE IF NOT EXISTS clearpathsummit_product_attributes (
+CREATE TABLE IF NOT EXISTS elevanta_product_attributes (
   id          SERIAL PRIMARY KEY,
-  product_id  INTEGER NOT NULL REFERENCES clearpathsummit_products(id) ON DELETE CASCADE,
+  product_id  INTEGER NOT NULL REFERENCES elevanta_products(id) ON DELETE CASCADE,
   name        VARCHAR(255) NOT NULL,
   options     TEXT[] NOT NULL DEFAULT '{}',
   position    INTEGER NOT NULL DEFAULT 0
 );
 
 -- Orders
-CREATE TABLE IF NOT EXISTS clearpathsummit_orders (
+CREATE TABLE IF NOT EXISTS elevanta_orders (
   id                    SERIAL PRIMARY KEY,
-  customer_id           INTEGER REFERENCES clearpathsummit_users(id) ON DELETE SET NULL,
+  customer_id           INTEGER REFERENCES elevanta_users(id) ON DELETE SET NULL,
   status                VARCHAR(50) NOT NULL DEFAULT 'pending',
   currency              VARCHAR(10) NOT NULL DEFAULT 'NGN',
   total                 DECIMAL(14,2) NOT NULL DEFAULT 0,
@@ -112,10 +112,10 @@ CREATE TABLE IF NOT EXISTS clearpathsummit_orders (
 );
 
 -- Order Line Items
-CREATE TABLE IF NOT EXISTS clearpathsummit_order_items (
+CREATE TABLE IF NOT EXISTS elevanta_order_items (
   id          SERIAL PRIMARY KEY,
-  order_id    INTEGER NOT NULL REFERENCES clearpathsummit_orders(id) ON DELETE CASCADE,
-  product_id  INTEGER REFERENCES clearpathsummit_products(id) ON DELETE SET NULL,
+  order_id    INTEGER NOT NULL REFERENCES elevanta_orders(id) ON DELETE CASCADE,
+  product_id  INTEGER REFERENCES elevanta_products(id) ON DELETE SET NULL,
   name        VARCHAR(500) NOT NULL,
   quantity    INTEGER NOT NULL DEFAULT 1,
   price       DECIMAL(14,2) NOT NULL,
@@ -125,10 +125,10 @@ CREATE TABLE IF NOT EXISTS clearpathsummit_order_items (
 );
 
 -- Paylater Requests
-CREATE TABLE IF NOT EXISTS clearpathsummit_paylater_requests (
+CREATE TABLE IF NOT EXISTS elevanta_paylater_requests (
   id          SERIAL PRIMARY KEY,
-  customer_id INTEGER REFERENCES clearpathsummit_users(id) ON DELETE CASCADE,
-  product_id  INTEGER REFERENCES clearpathsummit_products(id) ON DELETE SET NULL,
+  customer_id INTEGER REFERENCES elevanta_users(id) ON DELETE CASCADE,
+  product_id  INTEGER REFERENCES elevanta_products(id) ON DELETE SET NULL,
   status      VARCHAR(50) NOT NULL DEFAULT 'pending',
   payment     JSONB NOT NULL DEFAULT '[]',
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS clearpathsummit_paylater_requests (
 );
 
 -- Hero / Promotional Banners
-CREATE TABLE IF NOT EXISTS clearpathsummit_banners (
+CREATE TABLE IF NOT EXISTS elevanta_banners (
   id          SERIAL PRIMARY KEY,
   name        VARCHAR(255),
   image_url   TEXT NOT NULL,
@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS clearpathsummit_banners (
 );
 
 -- Global Store Settings (key-value)
-CREATE TABLE IF NOT EXISTS clearpathsummit_global_settings (
+CREATE TABLE IF NOT EXISTS elevanta_global_settings (
   id          SERIAL PRIMARY KEY,
   key         VARCHAR(255) UNIQUE NOT NULL,
   value       TEXT,
@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS clearpathsummit_global_settings (
 );
 
 -- Contact Messages
-CREATE TABLE IF NOT EXISTS clearpathsummit_contact_messages (
+CREATE TABLE IF NOT EXISTS elevanta_contact_messages (
   id          SERIAL PRIMARY KEY,
   fullName    VARCHAR(255) NOT NULL,
   email       VARCHAR(255) NOT NULL,
@@ -167,9 +167,9 @@ CREATE TABLE IF NOT EXISTS clearpathsummit_contact_messages (
 );
 
 -- Product Reviews
-CREATE TABLE IF NOT EXISTS clearpathsummit_reviews (
+CREATE TABLE IF NOT EXISTS elevanta_reviews (
   id          SERIAL PRIMARY KEY,
-  product_id  INTEGER NOT NULL REFERENCES clearpathsummit_products(id) ON DELETE CASCADE,
+  product_id  INTEGER NOT NULL REFERENCES elevanta_products(id) ON DELETE CASCADE,
   reviewer    VARCHAR(255) NOT NULL,
   email       VARCHAR(255),
   rating      INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
@@ -179,26 +179,26 @@ CREATE TABLE IF NOT EXISTS clearpathsummit_reviews (
 );
 
 -- ── Indexes ──────────────────────────────────────────────────
-CREATE INDEX IF NOT EXISTS idx_clearpathsummit_products_status        ON clearpathsummit_products(status);
-CREATE INDEX IF NOT EXISTS idx_clearpathsummit_products_stock_status  ON clearpathsummit_products(stock_status);
-CREATE INDEX IF NOT EXISTS idx_clearpathsummit_product_images_product ON clearpathsummit_product_images(product_id, position);
-CREATE INDEX IF NOT EXISTS idx_clearpathsummit_product_cat_product    ON clearpathsummit_product_categories(product_id);
-CREATE INDEX IF NOT EXISTS idx_clearpathsummit_product_cat_category   ON clearpathsummit_product_categories(category_id);
-CREATE INDEX IF NOT EXISTS idx_clearpathsummit_orders_customer        ON clearpathsummit_orders(customer_id);
-CREATE INDEX IF NOT EXISTS idx_clearpathsummit_orders_status          ON clearpathsummit_orders(status);
-CREATE INDEX IF NOT EXISTS idx_clearpathsummit_order_items_order      ON clearpathsummit_order_items(order_id);
-CREATE INDEX IF NOT EXISTS idx_clearpathsummit_categories_parent      ON clearpathsummit_categories(parent_id);
-CREATE INDEX IF NOT EXISTS idx_clearpathsummit_categories_slug        ON clearpathsummit_categories(slug);
-CREATE INDEX IF NOT EXISTS idx_clearpathsummit_reviews_product        ON clearpathsummit_reviews(product_id);
+CREATE INDEX IF NOT EXISTS idx_elevanta_products_status        ON elevanta_products(status);
+CREATE INDEX IF NOT EXISTS idx_elevanta_products_stock_status  ON elevanta_products(stock_status);
+CREATE INDEX IF NOT EXISTS idx_elevanta_product_images_product ON elevanta_product_images(product_id, position);
+CREATE INDEX IF NOT EXISTS idx_elevanta_product_cat_product    ON elevanta_product_categories(product_id);
+CREATE INDEX IF NOT EXISTS idx_elevanta_product_cat_category   ON elevanta_product_categories(category_id);
+CREATE INDEX IF NOT EXISTS idx_elevanta_orders_customer        ON elevanta_orders(customer_id);
+CREATE INDEX IF NOT EXISTS idx_elevanta_orders_status          ON elevanta_orders(status);
+CREATE INDEX IF NOT EXISTS idx_elevanta_order_items_order      ON elevanta_order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_elevanta_categories_parent      ON elevanta_categories(parent_id);
+CREATE INDEX IF NOT EXISTS idx_elevanta_categories_slug        ON elevanta_categories(slug);
+CREATE INDEX IF NOT EXISTS idx_elevanta_reviews_product        ON elevanta_reviews(product_id);
 
 -- ── Default Global Settings ───────────────────────────────────
-INSERT INTO clearpathsummit_global_settings (key, value) VALUES
-  ('shop_name',           'clearpathsummit'),
-  ('company_name',        'clearpathsummit Technologies Limited'),
+INSERT INTO elevanta_global_settings (key, value) VALUES
+  ('shop_name',           'elevanta'),
+  ('company_name',        'elevanta Technologies Limited'),
   ('address',             'Nigeria'),
-  ('email',               'support@clearpathsummit.com'),
+  ('email',               'support@elevanta.com'),
   ('contact',             ''),
-  ('website',             'https://clearpathsummit.com'),
+  ('website',             'https://elevanta.com'),
   ('default_currency',    'NGN'),
   ('default_time_zone',   'Africa/Lagos'),
   ('default_date_format', 'DD-MM-YYYY'),

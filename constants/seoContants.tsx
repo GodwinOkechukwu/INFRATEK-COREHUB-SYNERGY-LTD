@@ -1,11 +1,11 @@
 import { Metadata } from "next";
 
 // 1. Core Configuration Constants
-export const SITE_NAME = "clearpath summit innovations limited";
+export const SITE_NAME = "Elevanta Limited";
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://clearpath-summit-innovations-limited.com"; // Update with actual URL
-export const TWITTER_HANDLE = "clearpathsummit@innovations";
+  "https://elevanta-limited.com"; // Update with actual URL
+export const TWITTER_HANDLE = "elevanta@limited";
 
 interface SEOConfig {
   title: string;
@@ -20,9 +20,9 @@ export const SEODATA: Record<string, SEOConfig> = {
   default: {
     title: `${SITE_NAME} | Empowering Businesses Through Technology`,
     description:
-      "clearpathsummit innovations Ltd provides cutting-edge software development, AI integration, and digital transformation strategies to scale modern enterprises.",
+      "Elevanta Limited Ltd provides cutting-edge software development, AI integration, and digital transformation strategies to scale modern enterprises.",
     keywords: [
-      "clearpathsummit Digital",
+      "elevanta Digital",
       "Software Development Nigeria",
       "Digital Transformation",
       "AI Solutions for Business",
@@ -35,7 +35,7 @@ export const SEODATA: Record<string, SEOConfig> = {
   home: {
     title: `${SITE_NAME} | Leading Digital Solutions & Tech Excellence`,
     description:
-      "Innovate and grow with clearpathsummit. We build high-performance digital products, from mobile apps to enterprise AI systems, tailored to your business needs.",
+      "Innovate and grow with elevanta. We build high-performance digital products, from mobile apps to enterprise AI systems, tailored to your business needs.",
     keywords: [
       "Mobile App Development",
       "Enterprise Software",
@@ -83,19 +83,19 @@ export const SEODATA: Record<string, SEOConfig> = {
   login: {
     title: `Client Portal Login | ${SITE_NAME}`,
     description:
-      "Access your clearpathsummit client dashboard to track project progress, manage subscriptions, and collaborate with your dev team.",
+      "Access your elevanta client dashboard to track project progress, manage subscriptions, and collaborate with your dev team.",
     keywords: [
       "Client login",
       "Project tracking portal",
-      "clearpathsummit dashboard access",
+      "elevanta dashboard access",
     ],
   },
   register: {
     title: `Partner with Us | Join ${SITE_NAME}`,
     description:
-      "Create an account to start your project journey with clearpathsummit innovations and access premium tech resources.",
+      "Create an account to start your project journey with Elevanta Limited and access premium tech resources.",
     keywords: [
-      "Get started with clearpathsummit",
+      "Get started with elevanta",
       "Project onboarding",
       "Digital partnership",
     ],

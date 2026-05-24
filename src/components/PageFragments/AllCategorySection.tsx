@@ -60,7 +60,7 @@ const AllCategorySection = () => {
           </div>
           <div className="md:col-span-2">
             <p className="text-sm sm:text-sm slg:text-base leading-relaxed ">
-              ClearPathSummit Innovations is a trusted distributor of premium
+              Elevanta Limited is a trusted distributor of premium
               computer hardware and digital technology solutions in Nigeria. We
               provide a wide range of high-performance gadgets and IT equipment
               designed to support businesses, gamers, creators, students, and

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import AdminProvider from "./_components/AdminProvider";
 
 export const metadata: Metadata = {
-  title: { template: "%s | clearpathsummit Admin", default: "clearpathsummit Admin" },
+  title: { template: "%s | elevanta Admin", default: "elevanta Admin" },
   robots: { index: false, follow: false },
 };
 

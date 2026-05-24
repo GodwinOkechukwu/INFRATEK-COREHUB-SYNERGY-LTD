@@ -306,7 +306,7 @@ const CostCalculationSection = () => {
                   >
                     terms & conditions
                   </span>{" "}
-                  of clearpathsummit Innovations
+                  of Elevanta Limited
                 </span>
               </label>
             </div>
